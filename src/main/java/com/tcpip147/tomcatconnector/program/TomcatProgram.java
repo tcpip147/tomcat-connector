@@ -82,9 +82,11 @@ public class TomcatProgram {
                     return true;
                 });
 
-                for (File file : ptLib.toFile().listFiles()) {
-                    if (!existsLibraries.contains(file.getPath())) {
-                        FileUtil.delete(file);
+                if (ptLib.toFile().listFiles() != null) {
+                    for (File file : ptLib.toFile().listFiles()) {
+                        if (!existsLibraries.contains(file.getPath())) {
+                            FileUtil.delete(file);
+                        }
                     }
                 }
 
@@ -157,7 +159,7 @@ public class TomcatProgram {
                     commands.add("@" + ptCatalinaBase.resolve("sources.txt"));
 
                     pb.command(commands);
-                    
+
                     try {
                         pb.start();
                     } catch (IOException e) {
