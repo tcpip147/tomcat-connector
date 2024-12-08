@@ -1,10 +1,9 @@
 package com.tcpip147.tomcatconnector.toolwindow;
 
 import com.intellij.execution.RunManager;
-import com.intellij.execution.RunManagerEx;
-import com.intellij.execution.RunManagerListener;
 import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.configurations.RunConfiguration;
+import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
@@ -26,7 +25,6 @@ public class TomcatToolWindowContent {
     private final JPanel pContent;
     private JBList<TomcatConfiguration> ltServer;
     private DefaultListModel<TomcatConfiguration> model;
-    private RunAction runAction;
     private StopAction stopAction;
 
     public TomcatToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
@@ -41,8 +39,7 @@ public class TomcatToolWindowContent {
 
     private void createToolbar() {
         List<AnAction> actionList = new ArrayList<>();
-        runAction = new RunAction(project, ltServer);
-        actionList.add(runAction);
+        actionList.add(ActionManager.getInstance().getAction("Run"));
         stopAction = new StopAction(project, ltServer);
         actionList.add(stopAction);
         toolWindow.getComponent().putClientProperty(ToolWindowContentUi.DONT_HIDE_TOOLBAR_IN_HEADER, true);
@@ -57,6 +54,13 @@ public class TomcatToolWindowContent {
         ltServer.addListSelectionListener(e -> {
             if (ltServer.getSelectedIndex() > -1) {
                 TomcatConfiguration tomcatConfiguration = ltServer.getSelectedValue();
+                List<RunnerAndConfigurationSettings> runnerAndConfigurationSettingsList = RunManager.getInstance(project).getAllSettings();
+                for (RunnerAndConfigurationSettings runnerAndConfigurationSettings : runnerAndConfigurationSettingsList) {
+                    if (runnerAndConfigurationSettings.getConfiguration() == tomcatConfiguration) {
+                        RunManager.getInstance(project).setSelectedConfiguration(runnerAndConfigurationSettings);
+                        break;
+                    }
+                }
             }
         });
         JPanel pListWrapper = new JPanel();
