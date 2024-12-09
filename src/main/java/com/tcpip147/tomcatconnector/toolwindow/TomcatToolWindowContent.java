@@ -63,6 +63,7 @@ public class TomcatToolWindowContent {
                 }
             }
         });
+
         JPanel pListWrapper = new JPanel();
         pListWrapper.setLayout(new GridLayout(0, 1));
         pListWrapper.add(ltServer);
@@ -77,6 +78,14 @@ public class TomcatToolWindowContent {
         for (RunConfiguration configuration : configurationList) {
             if (configuration instanceof TomcatConfiguration tomcatConfiguration) {
                 model.addElement(tomcatConfiguration);
+            }
+        }
+
+        if (RunManager.getInstance(project).getSelectedConfiguration() != null) {
+            for (int i = 0; i < model.getSize(); i++) {
+                if (model.get(i) == RunManager.getInstance(project).getSelectedConfiguration().getConfiguration()) {
+                    ltServer.setSelectionInterval(i, i);
+                }
             }
         }
     }
