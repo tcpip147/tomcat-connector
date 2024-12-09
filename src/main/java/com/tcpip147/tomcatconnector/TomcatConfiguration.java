@@ -61,7 +61,7 @@ public class TomcatConfiguration extends RunConfigurationBase<TomcatConfiguratio
     @Nullable
     @Override
     public CommandLineState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment environment) {
-        return new TomcatJavaCommandLineState(this, executor, environment);
+        return new TomcatJavaCommandLineState(this, environment);
     }
 
     public boolean isStarted() {

@@ -2,7 +2,6 @@ package com.tcpip147.tomcatconnector;
 
 import com.intellij.debugger.settings.DebuggerSettings;
 import com.intellij.execution.ExecutionException;
-import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.JavaCommandLineState;
 import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.execution.configurations.ParametersList;
@@ -19,14 +18,10 @@ import java.nio.file.Path;
 public class TomcatJavaCommandLineState extends JavaCommandLineState {
 
     private final TomcatConfiguration configuration;
-    private final Executor executor;
-    private final ExecutionEnvironment environment;
 
-    public TomcatJavaCommandLineState(TomcatConfiguration configuration, Executor executor, ExecutionEnvironment environment) {
+    public TomcatJavaCommandLineState(TomcatConfiguration configuration, ExecutionEnvironment environment) {
         super(environment);
         this.configuration = configuration;
-        this.executor = executor;
-        this.environment = environment;
     }
 
     @Override
@@ -48,6 +43,7 @@ public class TomcatJavaCommandLineState extends JavaCommandLineState {
         vmParams.addProperty("catalina.home", ptCatalinaHome.toString());
         vmParams.defineProperty("catalina.base", ptCatalinaBase.toString());
         vmParams.defineProperty("java.io.tmpdir", ptCatalinaBase.resolve("temp").toString());
+        vmParams.addParametersString(configuration.getOptions().getVmOptions());
 
         return javaParams;
     }

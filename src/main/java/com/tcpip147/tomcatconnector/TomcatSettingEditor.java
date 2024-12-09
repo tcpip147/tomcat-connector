@@ -9,6 +9,7 @@ import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import com.intellij.ui.RawCommandLineEditor;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.table.JBTable;
@@ -30,6 +31,7 @@ public class TomcatSettingEditor extends SettingsEditor<TomcatConfiguration> {
     private final TextFieldWithBrowseButton tfCatalinaHome;
     private final TextFieldWithBrowseButton tfCatalinaBase;
     private final TextFieldWithBrowseButton tfDocBase;
+    private final RawCommandLineEditor tfVmOptions;
     private final ModulesComboBox cbModules;
     private final JPanel pModules;
     private final JPanel pDeploymentAssembly;
@@ -41,6 +43,7 @@ public class TomcatSettingEditor extends SettingsEditor<TomcatConfiguration> {
         tfCatalinaHome = createDirectorySelector("Select Catalina Home");
         tfCatalinaBase = createDirectorySelector("Select Catalina Base");
         tfDocBase = createDirectorySelector("Select Document Base");
+        tfVmOptions = new RawCommandLineEditor();
         cbModules = createModulesComboBox();
         pModules = createModulesPanel();
         pDeploymentAssembly = createDeploymentAssemblyPanel();
@@ -51,6 +54,7 @@ public class TomcatSettingEditor extends SettingsEditor<TomcatConfiguration> {
                 .addLabeledComponent("Catalina Home:", tfCatalinaHome)
                 .addLabeledComponent("Catalina Base:", tfCatalinaBase)
                 .addLabeledComponent("Document Base:", tfDocBase)
+                .addLabeledComponent("Vm Options:", tfVmOptions)
                 .addLabeledComponent("Module:", pModules).addComponent(new JBLabel("Deployment Assembly:")).addComponent(pDeploymentAssembly).getPanel();
     }
 
@@ -124,6 +128,7 @@ public class TomcatSettingEditor extends SettingsEditor<TomcatConfiguration> {
         tfCatalinaHome.setText(configuration.getOptions().getCatalinaHome());
         tfCatalinaBase.setText(configuration.getOptions().getCatalinaBase());
         tfDocBase.setText(configuration.getOptions().getDocBase());
+        tfVmOptions.setText(configuration.getOptions().getVmOptions());
         setDeploymentAssemblyData(configuration.getOptions().getDeploymentAssembly());
     }
 
@@ -133,6 +138,7 @@ public class TomcatSettingEditor extends SettingsEditor<TomcatConfiguration> {
         configuration.getOptions().setCatalinaHome(tfCatalinaHome.getText());
         configuration.getOptions().setCatalinaBase(tfCatalinaBase.getText());
         configuration.getOptions().setDocBase(tfDocBase.getText());
+        configuration.getOptions().setVmOptions(tfVmOptions.getText());
         configuration.getOptions().setDeploymentAssembly(getDeploymentAssemblyData());
     }
 
