@@ -3,10 +3,12 @@ package com.tcpip147.tomcatconnector.toolwindow;
 import com.intellij.execution.RunManager;
 import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.configurations.RunConfiguration;
-import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
+import com.intellij.openapi.ui.popup.ListPopup;
+import com.intellij.openapi.ui.popup.ListPopupStep;
+import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.impl.content.ToolWindowContentUi;
 import com.intellij.ui.components.JBList;
@@ -16,6 +18,8 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +31,7 @@ public class TomcatToolWindowContent {
     private JBList<TomcatConfiguration> ltServer;
     private DefaultListModel<TomcatConfiguration> model;
     private StopAction stopAction;
+    private ActionPopupMenu actionPopupMenu;
 
     public TomcatToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         this.project = project;
@@ -35,7 +40,17 @@ public class TomcatToolWindowContent {
         pContent.setLayout(new BorderLayout());
         createList();
         createToolbar();
+        createContextMenu();
         reload();
+    }
+
+    private void createContextMenu() {
+        DefaultActionGroup group = new DefaultActionGroup();
+        group.add(new RunAction(project, ltServer));
+        group.add(new StopAction(project, ltServer));
+        group.addSeparator();
+        group.add(new OpenAction(project, ltServer));
+        actionPopupMenu = ActionManager.getInstance().createActionPopupMenu("TomcatToolWindowPopupMenu", group);
     }
 
     private void createToolbar() {
@@ -57,6 +72,18 @@ public class TomcatToolWindowContent {
                 //
             }
         });
+        ltServer.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    int index = ltServer.locationToIndex(e.getPoint());
+                    if (index > -1) {
+                        ltServer.setSelectionInterval(index, index);
+                        actionPopupMenu.getComponent().show(toolWindow.getComponent(), e.getX(), e.getY());
+                    }
+                }
+            }
+        });
 
         JPanel pListWrapper = new JPanel();
         pListWrapper.setLayout(new GridLayout(0, 1));
@@ -72,14 +99,6 @@ public class TomcatToolWindowContent {
         for (RunConfiguration configuration : configurationList) {
             if (configuration instanceof TomcatConfiguration tomcatConfiguration) {
                 model.addElement(tomcatConfiguration);
-            }
-        }
-
-        if (RunManager.getInstance(project).getSelectedConfiguration() != null) {
-            for (int i = 0; i < model.getSize(); i++) {
-                if (model.get(i) == RunManager.getInstance(project).getSelectedConfiguration().getConfiguration()) {
-                    ltServer.setSelectionInterval(i, i);
-                }
             }
         }
     }
