@@ -5,6 +5,7 @@ import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.impl.content.ToolWindowContentUi;
@@ -39,7 +40,7 @@ public class TomcatToolWindowContent {
 
     private void createToolbar() {
         List<AnAction> actionList = new ArrayList<>();
-        actionList.add(ActionManager.getInstance().getAction("Run"));
+        actionList.add(new RunAction(project, ltServer));
         stopAction = new StopAction(project, ltServer);
         actionList.add(stopAction);
         toolWindow.getComponent().putClientProperty(ToolWindowContentUi.DONT_HIDE_TOOLBAR_IN_HEADER, true);
@@ -53,14 +54,7 @@ public class TomcatToolWindowContent {
         ltServer.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
         ltServer.addListSelectionListener(e -> {
             if (ltServer.getSelectedIndex() > -1) {
-                TomcatConfiguration tomcatConfiguration = ltServer.getSelectedValue();
-                List<RunnerAndConfigurationSettings> runnerAndConfigurationSettingsList = RunManager.getInstance(project).getAllSettings();
-                for (RunnerAndConfigurationSettings runnerAndConfigurationSettings : runnerAndConfigurationSettingsList) {
-                    if (runnerAndConfigurationSettings.getConfiguration() == tomcatConfiguration) {
-                        RunManager.getInstance(project).setSelectedConfiguration(runnerAndConfigurationSettings);
-                        break;
-                    }
-                }
+                //
             }
         });
 

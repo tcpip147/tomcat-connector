@@ -58,6 +58,7 @@ public class TomcatJavaCommandLineState extends JavaCommandLineState {
             public void startNotified(@NotNull ProcessEvent event) {
                 super.startNotified(event);
                 configuration.setStarted(true);
+                configuration.setHandler(handler);
             }
 
             @Override

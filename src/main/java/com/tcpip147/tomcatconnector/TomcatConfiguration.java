@@ -16,6 +16,7 @@ public class TomcatConfiguration extends RunConfigurationBase<TomcatConfiguratio
 
     private final RunConfigurationModule configurationModule;
     private boolean isStarted = false;
+    private TomcatKillableColoredProcessHandler handler;
 
     public TomcatConfiguration(Project project, TomcatConfigurationFactory factory, String name) {
         super(project, factory, name);
@@ -70,5 +71,13 @@ public class TomcatConfiguration extends RunConfigurationBase<TomcatConfiguratio
 
     public void setStarted(boolean started) {
         isStarted = started;
+    }
+
+    public void setHandler(TomcatKillableColoredProcessHandler handler) {
+        this.handler = handler;
+    }
+
+    public TomcatKillableColoredProcessHandler getHandler() {
+        return handler;
     }
 }
