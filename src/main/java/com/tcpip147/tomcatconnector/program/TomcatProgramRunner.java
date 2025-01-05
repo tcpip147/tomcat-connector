@@ -28,7 +28,7 @@ public class TomcatProgramRunner extends DefaultJavaProgramRunner {
     }
 
     @Override
-    public void execute(@NotNull ExecutionEnvironment environment) throws ExecutionException {
+    public void execute(@NotNull ExecutionEnvironment environment) {
         new TomcatProgram().execute(environment, () -> {
             try {
                 runTomcatServer(environment);

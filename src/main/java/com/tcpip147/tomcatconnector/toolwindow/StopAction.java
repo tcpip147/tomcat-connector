@@ -1,9 +1,7 @@
 package com.tcpip147.tomcatconnector.toolwindow;
 
-import com.intellij.execution.ProgramRunnerUtil;
 import com.intellij.execution.RunManager;
 import com.intellij.execution.RunnerAndConfigurationSettings;
-import com.intellij.execution.executors.DefaultRunExecutor;
 import com.intellij.execution.impl.ExecutionManagerImpl;
 import com.intellij.execution.ui.RunContentDescriptor;
 import com.intellij.openapi.actionSystem.ActionUpdateThread;
@@ -17,13 +15,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static com.intellij.execution.StoppableRunDescriptorsKt.getStoppableDescriptors;
 import static com.intellij.execution.actions.StopAction.getActiveStoppableDescriptors;
 
 public class StopAction extends AnAction {
 
-    private Project project;
-    private JBList<TomcatConfiguration> ltServer;
+    private final Project project;
+    private final JBList<TomcatConfiguration> ltServer;
 
     public StopAction(Project project, JBList<TomcatConfiguration> ltServer) {
         super("Stop", "Stop", IconLoader.getIcon("/expui/run/stop.svg", StopAction.class));

@@ -1,14 +1,12 @@
 package com.tcpip147.tomcatconnector.toolwindow;
 
 import com.intellij.execution.RunManager;
-import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.configurations.RunConfiguration;
-import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.ActionPopupMenu;
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.popup.JBPopupFactory;
-import com.intellij.openapi.ui.popup.ListPopup;
-import com.intellij.openapi.ui.popup.ListPopupStep;
-import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.impl.content.ToolWindowContentUi;
 import com.intellij.ui.components.JBList;
@@ -30,7 +28,6 @@ public class TomcatToolWindowContent {
     private final JPanel pContent;
     private JBList<TomcatConfiguration> ltServer;
     private DefaultListModel<TomcatConfiguration> model;
-    private StopAction stopAction;
     private ActionPopupMenu actionPopupMenu;
 
     public TomcatToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
@@ -49,14 +46,14 @@ public class TomcatToolWindowContent {
         group.add(new RunAction(project, ltServer));
         group.add(new StopAction(project, ltServer));
         group.addSeparator();
-        group.add(new OpenAction(project, ltServer));
+        group.add(new OpenAction(ltServer));
         actionPopupMenu = ActionManager.getInstance().createActionPopupMenu("TomcatToolWindowPopupMenu", group);
     }
 
     private void createToolbar() {
         List<AnAction> actionList = new ArrayList<>();
         actionList.add(new RunAction(project, ltServer));
-        stopAction = new StopAction(project, ltServer);
+        StopAction stopAction = new StopAction(project, ltServer);
         actionList.add(stopAction);
         toolWindow.getComponent().putClientProperty(ToolWindowContentUi.DONT_HIDE_TOOLBAR_IN_HEADER, true);
         toolWindow.setTitleActions(actionList);
@@ -67,11 +64,6 @@ public class TomcatToolWindowContent {
         ltServer = new JBList<>(model);
         ltServer.setCellRenderer(new TomcatListCellRenderer());
         ltServer.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
-        ltServer.addListSelectionListener(e -> {
-            if (ltServer.getSelectedIndex() > -1) {
-                //
-            }
-        });
         ltServer.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {

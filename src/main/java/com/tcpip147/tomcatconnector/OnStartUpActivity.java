@@ -2,9 +2,6 @@ package com.tcpip147.tomcatconnector;
 
 import com.intellij.execution.ExecutionManager;
 import com.intellij.execution.RunManagerListener;
-import com.intellij.execution.RunnerAndConfigurationSettings;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.ProjectActivity;
@@ -14,32 +11,23 @@ import com.intellij.openapi.vfs.newvfs.BulkFileListener;
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.profile.codeInspection.ProjectInspectionProfileManager;
-import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
-import com.intellij.ui.content.impl.ContentImpl;
 import com.tcpip147.tomcatconnector.toolwindow.TomcatToolWindowContent;
 import com.tcpip147.tomcatconnector.toolwindow.TomcatToolWindowFactory;
 import kotlin.Unit;
 import kotlin.coroutines.Continuation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 
 public class OnStartUpActivity implements ProjectActivity {
-
-    private static final Logger log = LoggerFactory.getLogger(OnStartUpActivity.class);
 
     @Nullable
     @Override
@@ -82,9 +70,9 @@ public class OnStartUpActivity implements ProjectActivity {
 
     private void reloadToolWindow(Project project) {
         ToolWindow toolWindow = ToolWindowManager.getInstance(project).getToolWindow("Tomcat Servers");
-        Content content = toolWindow.getContentManager().getContent(0);
-        TomcatToolWindowContent toolWindowContent = content.getUserData(TomcatToolWindowFactory.TOOL_WINDOW_CONTENT);
-        toolWindowContent.reload();
+        Content content = Objects.requireNonNull(toolWindow).getContentManager().getContent(0);
+        TomcatToolWindowContent toolWindowContent = Objects.requireNonNull(content).getUserData(TomcatToolWindowFactory.TOOL_WINDOW_CONTENT);
+        Objects.requireNonNull(toolWindowContent).reload();
     }
 
     private void getChangedFiles(Module module, List<? extends VFileEvent> events, IChangedFileFilter filter) {

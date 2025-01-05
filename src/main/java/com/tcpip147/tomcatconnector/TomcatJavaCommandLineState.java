@@ -25,7 +25,7 @@ public class TomcatJavaCommandLineState extends JavaCommandLineState {
     }
 
     @Override
-    protected JavaParameters createJavaParameters() throws ExecutionException {
+    protected JavaParameters createJavaParameters() {
         Path ptCatalinaHome = Path.of(configuration.getOptions().getCatalinaHome());
         Path ptCatalinaBase = Path.of(configuration.getOptions().getCatalinaBase());
 

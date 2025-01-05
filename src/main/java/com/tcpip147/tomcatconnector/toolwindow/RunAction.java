@@ -15,8 +15,8 @@ import java.util.List;
 
 public class RunAction extends AnAction {
 
-    private Project project;
-    private JBList<TomcatConfiguration> ltServer;
+    private final Project project;
+    private final JBList<TomcatConfiguration> ltServer;
 
     public RunAction(Project project, JBList<TomcatConfiguration> ltServer) {
         super("Run", "Run", IconLoader.getIcon("/expui/run/run.svg", RunAction.class));

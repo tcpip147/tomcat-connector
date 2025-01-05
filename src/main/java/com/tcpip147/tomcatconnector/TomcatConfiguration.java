@@ -43,20 +43,16 @@ public class TomcatConfiguration extends RunConfigurationBase<TomcatConfiguratio
     @Override
     public void readExternal(@NotNull Element element) throws InvalidDataException {
         super.readExternal(element);
-        if (getOptions() != null) {
-            XmlSerializer.deserializeInto(element, getOptions());
-            configurationModule.readExternal(element);
-        }
+        XmlSerializer.deserializeInto(element, getOptions());
+        configurationModule.readExternal(element);
     }
 
     @Override
     public void writeExternal(@NotNull Element element) {
         super.writeExternal(element);
-        if (getOptions() != null) {
-            XmlSerializer.serializeObjectInto(getOptions(), element);
-            if (configurationModule.getModule() != null) {
-                configurationModule.writeExternal(element);
-            }
+        XmlSerializer.serializeObjectInto(getOptions(), element);
+        if (configurationModule.getModule() != null) {
+            configurationModule.writeExternal(element);
         }
     }
 

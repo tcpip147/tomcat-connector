@@ -1,6 +1,5 @@
 package com.tcpip147.tomcatconnector.program;
 
-import com.intellij.execution.ExecutionException;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
@@ -27,7 +26,7 @@ public class TomcatProgram {
 
     private final List<String> existsLibraries = new ArrayList<>();
 
-    public void execute(@NotNull ExecutionEnvironment environment, Runnable runnable) throws ExecutionException {
+    public void execute(@NotNull ExecutionEnvironment environment, Runnable runnable) {
         ProgressManager.getInstance().run(new Task.Backgroundable(environment.getProject(), "Starting...", true) {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {

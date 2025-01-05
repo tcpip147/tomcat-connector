@@ -28,7 +28,7 @@ public class TomcatProgramDebugger extends GenericDebuggerRunner {
     }
 
     @Override
-    public void execute(@NotNull ExecutionEnvironment environment) throws ExecutionException {
+    public void execute(@NotNull ExecutionEnvironment environment) {
         new TomcatProgram().execute(environment, () -> {
             try {
                 runTomcatServer(environment);

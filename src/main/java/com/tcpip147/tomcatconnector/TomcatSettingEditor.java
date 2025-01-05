@@ -6,9 +6,9 @@ import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import com.intellij.ui.JBColor;
 import com.intellij.ui.RawCommandLineEditor;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBScrollPane;
@@ -33,8 +33,6 @@ public class TomcatSettingEditor extends SettingsEditor<TomcatConfiguration> {
     private final TextFieldWithBrowseButton tfDocBase;
     private final RawCommandLineEditor tfVmOptions;
     private final ModulesComboBox cbModules;
-    private final JPanel pModules;
-    private final JPanel pDeploymentAssembly;
     private final JBTable tbDeploymentAssembly;
     private final DefaultTableModel tmDeploymentAssembly;
 
@@ -45,17 +43,17 @@ public class TomcatSettingEditor extends SettingsEditor<TomcatConfiguration> {
         tfDocBase = createDirectorySelector("Select Document Base");
         tfVmOptions = new RawCommandLineEditor();
         cbModules = createModulesComboBox();
-        pModules = createModulesPanel();
-        pDeploymentAssembly = createDeploymentAssemblyPanel();
+        JPanel pModules = createModulesPanel();
+        JPanel pDeploymentAssembly = createDeploymentAssemblyPanel();
         tbDeploymentAssembly = createDeploymentAssemblyTable(pDeploymentAssembly);
         tmDeploymentAssembly = (DefaultTableModel) tbDeploymentAssembly.getModel();
 
         editor = FormBuilder.createFormBuilder()
-                .addLabeledComponent("Catalina Home:", tfCatalinaHome)
-                .addLabeledComponent("Catalina Base:", tfCatalinaBase)
-                .addLabeledComponent("Document Base:", tfDocBase)
-                .addLabeledComponent("Vm Options:", tfVmOptions)
-                .addLabeledComponent("Module:", pModules).addComponent(new JBLabel("Deployment Assembly:")).addComponent(pDeploymentAssembly).getPanel();
+                .addLabeledComponent("Catalina home:", tfCatalinaHome)
+                .addLabeledComponent("Catalina base:", tfCatalinaBase)
+                .addLabeledComponent("Document base:", tfDocBase)
+                .addLabeledComponent("Vm options:", tfVmOptions)
+                .addLabeledComponent("Module:", pModules).addComponent(new JBLabel("Deployment assembly:")).addComponent(pDeploymentAssembly).getPanel();
     }
 
     private TextFieldWithBrowseButton createDirectorySelector(String label) {
@@ -85,7 +83,7 @@ public class TomcatSettingEditor extends SettingsEditor<TomcatConfiguration> {
         JPanel panel = new JPanel(new BorderLayout());
         DefaultActionGroup group = new DefaultActionGroup();
         ActionToolbar actionToolbar = ActionManager.getInstance().createActionToolbar("DeploymentAssemblyActionToolbar", group, true);
-        actionToolbar.getComponent().setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(30, 31, 34)));
+        actionToolbar.getComponent().setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new JBColor(new Color(30, 31, 34), new Color(30, 31, 34))));
         group.add(new AnAction("Add", "Add", AllIcons.General.Add) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
@@ -116,7 +114,7 @@ public class TomcatSettingEditor extends SettingsEditor<TomcatConfiguration> {
         model.addColumn("Source");
         model.addColumn("Target");
         JBScrollPane panel = new JBScrollPane(table);
-        panel.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, new Color(30, 31, 34)));
+        panel.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, new JBColor(new Color(30, 31, 34), new Color(30, 31, 34))));
         panel.setPreferredSize(new Dimension(panel.getWidth(), 130));
         parent.add(panel, BorderLayout.CENTER);
         return table;
@@ -133,7 +131,7 @@ public class TomcatSettingEditor extends SettingsEditor<TomcatConfiguration> {
     }
 
     @Override
-    protected void applyEditorTo(@NotNull TomcatConfiguration configuration) throws ConfigurationException {
+    protected void applyEditorTo(@NotNull TomcatConfiguration configuration) {
         configuration.getConfigurationModule().setModule(cbModules.getSelectedModule());
         configuration.getOptions().setCatalinaHome(tfCatalinaHome.getText());
         configuration.getOptions().setCatalinaBase(tfCatalinaBase.getText());
@@ -155,7 +153,7 @@ public class TomcatSettingEditor extends SettingsEditor<TomcatConfiguration> {
 
     private void setDeploymentAssemblyData(Map<String, String> data) {
         tmDeploymentAssembly.setRowCount(0);
-        for (Object key : data.keySet()) {
+        for (String key : data.keySet()) {
             tmDeploymentAssembly.addRow(new Object[]{key, data.get(key)});
         }
     }
