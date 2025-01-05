@@ -5,6 +5,7 @@ import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.CommandLineState;
 import com.intellij.execution.configurations.RunConfigurationBase;
 import com.intellij.execution.configurations.RunConfigurationModule;
+import com.intellij.execution.configurations.RunProfileWithCompileBeforeLaunchOption;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.InvalidDataException;
@@ -12,7 +13,7 @@ import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TomcatConfiguration extends RunConfigurationBase<TomcatConfigurationOptions> {
+public class TomcatConfiguration extends RunConfigurationBase<TomcatConfigurationOptions> implements RunProfileWithCompileBeforeLaunchOption {
 
     private final RunConfigurationModule configurationModule;
     private boolean isStarted = false;
