@@ -10,6 +10,7 @@ public class TomcatConfigurationOptions extends RunConfigurationOptions {
 
     private final StoredProperty<String> catalinaHome = string("").provideDelegate(this, "catalinaHome");
     private final StoredProperty<String> catalinaBase = string("").provideDelegate(this, "catalinaBase");
+    private final StoredProperty<String> docBase = string("").provideDelegate(this, "docBase");
     private final StoredProperty<String> vmOptions = string("").provideDelegate(this, "vmOptions");
     private final MapStoredProperty<String, String> deploymentAssembly = (MapStoredProperty<String, String>) this.<String, String>linkedMap().provideDelegate(this, "deploymentAssembly");
 
@@ -27,6 +28,14 @@ public class TomcatConfigurationOptions extends RunConfigurationOptions {
 
     public void setCatalinaBase(String value) {
         catalinaBase.setValue(this, value);
+    }
+
+    public String getDocBase() {
+        return docBase.getValue(this);
+    }
+
+    public void setDocBase(String value) {
+        docBase.setValue(this, value);
     }
 
     public String getVmOptions() {

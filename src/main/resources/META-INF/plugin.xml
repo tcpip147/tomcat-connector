@@ -1,6 +1,6 @@
 <idea-plugin>
     <id>com.tcpip147.tomcat-connector</id>
-    <name>Tomcat-Connector</name>
+    <name>tomcat-connector</name>
     <vendor email="tcpip147@naver.com" url="https://github.com/tcpip147">tcpip147</vendor>
     <description><![CDATA[A plugin that modules connect to tomcat servers.]]></description>
     <depends>com.intellij.modules.java</depends>

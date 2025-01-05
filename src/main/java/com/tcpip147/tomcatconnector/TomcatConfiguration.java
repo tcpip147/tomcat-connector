@@ -5,17 +5,14 @@ import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.CommandLineState;
 import com.intellij.execution.configurations.RunConfigurationBase;
 import com.intellij.execution.configurations.RunConfigurationModule;
-import com.intellij.execution.configurations.RunProfileWithCompileBeforeLaunchOption;
 import com.intellij.execution.runners.ExecutionEnvironment;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.InvalidDataException;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TomcatConfiguration extends RunConfigurationBase<TomcatConfigurationOptions> implements RunProfileWithCompileBeforeLaunchOption {
+public class TomcatConfiguration extends RunConfigurationBase<TomcatConfigurationOptions> {
 
     private final RunConfigurationModule configurationModule;
     private boolean isStarted = false;
@@ -24,6 +21,10 @@ public class TomcatConfiguration extends RunConfigurationBase<TomcatConfiguratio
     public TomcatConfiguration(Project project, TomcatConfigurationFactory factory, String name) {
         super(project, factory, name);
         configurationModule = new RunConfigurationModule(project);
+    }
+
+    public RunConfigurationModule getConfigurationModule() {
+        return configurationModule;
     }
 
     @NotNull
@@ -41,16 +42,20 @@ public class TomcatConfiguration extends RunConfigurationBase<TomcatConfiguratio
     @Override
     public void readExternal(@NotNull Element element) throws InvalidDataException {
         super.readExternal(element);
-        XmlSerializer.deserializeInto(element, getOptions());
-        configurationModule.readExternal(element);
+        if (getOptions() != null) {
+            XmlSerializer.deserializeInto(element, getOptions());
+            configurationModule.readExternal(element);
+        }
     }
 
     @Override
     public void writeExternal(@NotNull Element element) {
         super.writeExternal(element);
-        XmlSerializer.serializeObjectInto(getOptions(), element);
-        if (configurationModule.getModule() != null) {
-            configurationModule.writeExternal(element);
+        if (getOptions() != null) {
+            XmlSerializer.serializeObjectInto(getOptions(), element);
+            if (configurationModule.getModule() != null) {
+                configurationModule.writeExternal(element);
+            }
         }
     }
 
@@ -74,11 +79,5 @@ public class TomcatConfiguration extends RunConfigurationBase<TomcatConfiguratio
 
     public TomcatKillableColoredProcessHandler getHandler() {
         return handler;
-    }
-
-    @Override
-    public Module @NotNull [] getModules() {
-        ModuleManager moduleManager = ModuleManager.getInstance(getProject());
-        return moduleManager.getModules();
     }
 }
