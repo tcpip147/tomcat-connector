@@ -74,8 +74,8 @@ public class TomcatProgram {
 
         for (Pair<File, File> pair : existsFiles) {
             File sourceFile = pair.getFirst();
-            File targetFile = pair.getSecond();
             if (!sourceFile.exists()) {
+                File targetFile = pair.getSecond();
                 FileUtils.delete(targetFile.getPath());
             }
         }
