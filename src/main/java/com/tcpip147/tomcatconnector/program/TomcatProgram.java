@@ -8,9 +8,11 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.*;
+import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.tcpip147.tomcatconnector.TomcatConfiguration;
+import org.h2.store.fs.FileUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -45,6 +47,7 @@ public class TomcatProgram {
         Map<String, String> deploymentAssembly = configuration.getOptions().getDeploymentAssembly();
         Path ptDocBase = Paths.get(configuration.getOptions().getDocBase());
         Path ptLib = ptDocBase.resolve("WEB-INF").resolve("lib");
+        List<Pair<File, File>> existsFiles = new ArrayList<>();
         for (String key : deploymentAssembly.keySet()) {
             Path ptSource = Paths.get(basePath + key);
             Path ptTarget = Paths.get(ptDocBase + deploymentAssembly.get(key));
@@ -54,6 +57,8 @@ public class TomcatProgram {
                     File targetFile = new File(ptTarget + sourceFile.getPath().substring(ptSource.toString().length()));
                     if (targetFile.getPath().startsWith(ptLib.toString())) {
                         existsLibraries.add(targetFile.getPath());
+                    } else {
+                        existsFiles.add(new Pair<>(sourceFile, targetFile));
                     }
                     if (!targetFile.exists() || sourceFile.lastModified() > targetFile.lastModified()) {
                         try {
@@ -65,17 +70,14 @@ public class TomcatProgram {
                 }
                 return true;
             });
+        }
 
-            FileUtil.processFilesRecursively(ptTarget.toFile(), targetFile -> {
-                Path ptRelative = Paths.get(targetFile.getPath().substring(ptTarget.toString().length()));
-                File sourceFile = new File(ptSource + ptRelative.toString());
-                if (!sourceFile.exists()) {
-                    if (!targetFile.getPath().startsWith(ptLib.toString())) {
-                        FileUtil.delete(targetFile);
-                    }
-                }
-                return true;
-            });
+        for (Pair<File, File> pair : existsFiles) {
+            File sourceFile = pair.getFirst();
+            File targetFile = pair.getSecond();
+            if (!sourceFile.exists()) {
+                FileUtils.delete(targetFile.getPath());
+            }
         }
     }
 
