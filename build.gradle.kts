@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.tcpip147"
-version = "1.0-RELEASE"
+version = "1.1"
 
 repositories {
   mavenCentral()

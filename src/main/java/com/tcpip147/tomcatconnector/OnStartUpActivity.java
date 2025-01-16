@@ -2,6 +2,7 @@ package com.tcpip147.tomcatconnector;
 
 import com.intellij.execution.ExecutionManager;
 import com.intellij.execution.RunManagerListener;
+import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.ProjectActivity;
@@ -62,6 +63,11 @@ public class OnStartUpActivity implements ProjectActivity {
         project.getMessageBus().connect().subscribe(RunManagerListener.TOPIC, new RunManagerListener() {
             @Override
             public void endUpdate() {
+                reloadToolWindow(project);
+            }
+
+            @Override
+            public void runConfigurationAdded(@NotNull RunnerAndConfigurationSettings settings) {
                 reloadToolWindow(project);
             }
         });

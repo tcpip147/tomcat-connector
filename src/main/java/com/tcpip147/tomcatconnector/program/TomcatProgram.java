@@ -12,10 +12,11 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.tcpip147.tomcatconnector.TomcatConfiguration;
-import org.h2.store.fs.FileUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -61,11 +62,7 @@ public class TomcatProgram {
                         existsFiles.add(new Pair<>(sourceFile, targetFile));
                     }
                     if (!targetFile.exists() || sourceFile.lastModified() > targetFile.lastModified()) {
-                        try {
-                            FileUtil.copy(sourceFile, targetFile);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
+                        copy(sourceFile, targetFile);
                     }
                 }
                 return true;
@@ -76,7 +73,11 @@ public class TomcatProgram {
             File sourceFile = pair.getFirst();
             if (!sourceFile.exists()) {
                 File targetFile = pair.getSecond();
-                FileUtils.delete(targetFile.getPath());
+                if (!targetFile.getPath().startsWith(ptLib.toString())) {
+                    if (targetFile.exists()) {
+                        targetFile.delete();
+                    }
+                }
             }
         }
     }
@@ -91,15 +92,11 @@ public class TomcatProgram {
                     if (orderEntry instanceof LibraryOrderEntry libraryOrderEntry) {
                         VirtualFile[] jars = libraryOrderEntry.getRootFiles(OrderRootType.CLASSES);
                         for (VirtualFile jar : jars) {
-                            try {
-                                File sourceFile = new File(jar.getPath().substring(0, jar.getPath().length() - 2));
-                                File targetFile = ptLib.resolve(jar.getName()).toFile();
-                                existsLibraries.add(targetFile.getPath());
-                                if (!targetFile.exists() || sourceFile.lastModified() > targetFile.lastModified()) {
-                                    FileUtil.copy(sourceFile, targetFile);
-                                }
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
+                            File sourceFile = new File(jar.getPath().substring(0, jar.getPath().length() - 2));
+                            File targetFile = ptLib.resolve(jar.getName()).toFile();
+                            existsLibraries.add(targetFile.getPath());
+                            if (!targetFile.exists() || sourceFile.lastModified() > targetFile.lastModified()) {
+                                copy(sourceFile, targetFile);
                             }
                         }
                     }
@@ -111,7 +108,9 @@ public class TomcatProgram {
         if (ptLib.toFile().listFiles() != null) {
             for (File file : Objects.requireNonNull(ptLib.toFile().listFiles())) {
                 if (!existsLibraries.contains(file.getPath())) {
-                    FileUtil.delete(file);
+                    if (file.exists()) {
+                        file.delete();
+                    }
                 }
             }
         }
@@ -130,12 +129,26 @@ public class TomcatProgram {
                 Path ptRelative = Paths.get(targetFile.getPath().substring(ptTarget.toString().length()));
                 File sourceFile = new File(ptSource + ptRelative.toString());
                 if (!sourceFile.exists()) {
-                    if (targetFile.getPath().startsWith(ptLib.toString()) && !existsLibraries.contains(targetFile.getPath())) {
-                        FileUtil.delete(targetFile);
+                    if (targetFile.getPath().startsWith(ptLib.toString()) && !targetFile.getPath().equals(ptLib.toString()) && !existsLibraries.contains(targetFile.getPath())) {
+                        if (targetFile.exists()) {
+                            targetFile.delete();
+                        }
                     }
                 }
                 return true;
             });
+        }
+    }
+
+    private void copy(File sourceFile, File targetFile) {
+        try (FileInputStream fis = new FileInputStream(sourceFile); FileOutputStream fos = new FileOutputStream(targetFile)) {
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = fis.read(buffer, 0, 1024)) > 0) {
+                fos.write(buffer, 0, length);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }
