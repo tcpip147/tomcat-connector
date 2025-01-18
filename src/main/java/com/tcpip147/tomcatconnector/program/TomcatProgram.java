@@ -141,6 +141,16 @@ public class TomcatProgram {
     }
 
     private void copy(File sourceFile, File targetFile) {
+        if (!targetFile.exists()) {
+            if (!targetFile.getParentFile().exists()) {
+                targetFile.getParentFile().mkdirs();
+            }
+            try {
+                targetFile.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
         try (FileInputStream fis = new FileInputStream(sourceFile); FileOutputStream fos = new FileOutputStream(targetFile)) {
             byte[] buffer = new byte[1024];
             int length;

@@ -6,6 +6,8 @@ import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionPopupMenu;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
+import com.intellij.openapi.application.Application;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.impl.content.ToolWindowContentUi;
@@ -86,13 +88,15 @@ public class TomcatToolWindowContent {
     }
 
     public void reload() {
-        model.removeAllElements();
-        List<RunConfiguration> configurationList = RunManager.getInstance(project).getAllConfigurationsList();
-        for (RunConfiguration configuration : configurationList) {
-            if (configuration instanceof TomcatConfiguration tomcatConfiguration) {
-                model.addElement(tomcatConfiguration);
+        ApplicationManager.getApplication().invokeLater(() -> {
+            model.removeAllElements();
+            List<RunConfiguration> configurationList = RunManager.getInstance(project).getAllConfigurationsList();
+            for (RunConfiguration configuration : configurationList) {
+                if (configuration instanceof TomcatConfiguration tomcatConfiguration) {
+                    model.addElement(tomcatConfiguration);
+                }
             }
-        }
+        });
     }
 
     public JPanel getContentPanel() {
