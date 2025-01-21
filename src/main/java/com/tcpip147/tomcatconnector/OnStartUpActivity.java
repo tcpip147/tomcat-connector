@@ -71,6 +71,9 @@ public class OnStartUpActivity implements ProjectActivity {
                 reloadToolWindow(project);
             }
         });
+
+        reloadToolWindow(project);
+        
         return null;
     }
 

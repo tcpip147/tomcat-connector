@@ -6,6 +6,8 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
+import com.intellij.openapi.progress.util.ProgressIndicatorBase;
+import com.intellij.openapi.progress.util.ProgressWindow;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.*;
 import com.intellij.openapi.util.Pair;
@@ -29,18 +31,20 @@ public class TomcatProgram {
 
     private final List<String> existsLibraries = new ArrayList<>();
 
-    public void execute(@NotNull ExecutionEnvironment environment, Runnable runnable) {
-        ProgressManager.getInstance().run(new Task.Backgroundable(environment.getProject(), "Starting...", true) {
-            @Override
-            public void run(@NotNull ProgressIndicator indicator) {
-                TomcatConfiguration configuration = (TomcatConfiguration) Objects.requireNonNull(environment.getRunnerAndConfigurationSettings()).getConfiguration();
-                existsLibraries.clear();
-                copyDeploymentAssembly(environment.getProject(), configuration);
-                copyModuleLibraries(configuration);
-                deleteLibrariesInDeploymentAssembly(environment.getProject(), configuration);
-                ApplicationManager.getApplication().invokeLater(runnable);
+    public void execute(@NotNull ExecutionEnvironment environment) {
+        ProgressWindow progressIndicator = new ProgressWindow(false, environment.getProject());
+        progressIndicator.setTitle("Deploying Resources...");
+        ProgressManager.getInstance().runProcess(() -> {
+            TomcatConfiguration configuration = (TomcatConfiguration) Objects.requireNonNull(environment.getRunnerAndConfigurationSettings()).getConfiguration();
+            existsLibraries.clear();
+            copyDeploymentAssembly(environment.getProject(), configuration);
+            copyModuleLibraries(configuration);
+            deleteLibrariesInDeploymentAssembly(environment.getProject(), configuration);
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
             }
-        });
+        }, progressIndicator);
     }
 
     private void copyDeploymentAssembly(@NotNull Project project, @NotNull TomcatConfiguration configuration) {

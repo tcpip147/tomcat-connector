@@ -8,8 +8,9 @@
         <configurationType implementation="com.tcpip147.tomcatconnector.TomcatConfigurationType"/>
         <programRunner implementation="com.tcpip147.tomcatconnector.program.TomcatProgramRunner"/>
         <programRunner implementation="com.tcpip147.tomcatconnector.program.TomcatProgramDebugger"/>
-        <postStartupActivity implementation="com.tcpip147.tomcatconnector.OnStartUpActivity"/>
+        <backgroundPostStartupActivity implementation="com.tcpip147.tomcatconnector.OnStartUpActivity"/>
         <toolWindow id="Tomcat Servers" secondary="true" icon="/icon/tool-window.svg" anchor="left"
                     factoryClass="com.tcpip147.tomcatconnector.toolwindow.TomcatToolWindowFactory"/>
+        <stepsBeforeRunProvider implementation="com.tcpip147.tomcatconnector.program.TomcatBeforeRunProvider" />
     </extensions>
 </idea-plugin>
