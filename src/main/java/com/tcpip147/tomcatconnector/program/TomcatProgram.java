@@ -40,10 +40,6 @@ public class TomcatProgram {
             copyDeploymentAssembly(environment.getProject(), configuration);
             copyModuleLibraries(configuration);
             deleteLibrariesInDeploymentAssembly(environment.getProject(), configuration);
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-            }
         }, progressIndicator);
     }
 
