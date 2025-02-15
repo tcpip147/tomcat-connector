@@ -3,6 +3,7 @@ package com.tcpip147.tomcatconnector;
 import com.intellij.execution.ExecutionManager;
 import com.intellij.execution.RunManagerListener;
 import com.intellij.execution.RunnerAndConfigurationSettings;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.ProjectActivity;
@@ -72,8 +73,6 @@ public class OnStartUpActivity implements ProjectActivity {
             }
         });
 
-        reloadToolWindow(project);
-        
         return null;
     }
 
