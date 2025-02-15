@@ -1,5 +1,6 @@
 package com.tcpip147.tomcatconnector.toolwindow;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.ide.actions.RevealFileAction;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -15,7 +16,7 @@ public class OpenAction extends AnAction {
     private final SimpleTree ltServer;
 
     public OpenAction(SimpleTree ltServer) {
-        super("Open Configurations in Explorer");
+        super("Open Configurations in Explorer", "Open Configurations in Explorer", AllIcons.General.OpenDisk);
         this.ltServer = ltServer;
     }
 

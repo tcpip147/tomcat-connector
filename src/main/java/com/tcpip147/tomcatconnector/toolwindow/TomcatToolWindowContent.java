@@ -42,6 +42,7 @@ public class TomcatToolWindowContent {
     private RunAction runAction;
     private StopAction stopAction;
     private RefreshAction refreshAction;
+    private OpenAction openAction;
     private ActionPopupMenu actionPopupMenu;
     private JBScrollPane scrollPane;
 
@@ -73,6 +74,8 @@ public class TomcatToolWindowContent {
         actionList.add(stopAction);
         refreshAction = new RefreshAction(project, this);
         actionList.add(refreshAction);
+        openAction = new OpenAction(ltServer);
+        actionList.add(openAction);
         toolWindow.getComponent().putClientProperty(ToolWindowContentUi.DONT_HIDE_TOOLBAR_IN_HEADER, true);
         toolWindow.setTitleActions(actionList);
     }
